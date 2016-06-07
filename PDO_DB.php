@@ -18,7 +18,6 @@
  * [db_attr]
  * PDO::ATTRIBUTE_HERE = VALUE
  */
-
 class PDO_DB
 {
 	// @object Database handle
@@ -50,8 +49,9 @@ class PDO_DB
 	 * @param $settings_file
 	 * @throws exception
 	 */
-	private function connect($settings_file) {
-		if(!$this->settings = parse_ini_file($settings_file)) {
+	private function connect($settings_file)
+	{
+		if (!$this->settings = parse_ini_file($settings_file)) {
 			throw new exception("Unable to open file: $settings_file");
 		}
 		$dns = "$this->settings['database']['driver']:host=$this->settings['database']['host']";
@@ -65,10 +65,9 @@ class PDO_DB
 		try {
 			$this->dbh = new PDO($dns, $this->settings['user'], $this->settings['password'], $this->attributes);
 			$this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+			$this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 			$this->connected = TRUE;
-		}
-		catch (PDOException $e) {
+		} catch (PDOException $e) {
 			echo $e->getMessage();
 			die();
 		}
@@ -77,19 +76,25 @@ class PDO_DB
 	/**
 	 * Close the connection
 	 */
-	public function closeConnection() {
+	public function closeConnection()
+	{
 		$this->dbh = NULL;
 	}
 
-
-	public function bind($param, $value) {
+	/**
+	 * @param $param
+	 * @param $value
+	 */
+	public function bind($param, $value)
+	{
 		$this->parameters[sizeof($this->parameters)] = [":$param", $value];
 	}
 
 	/**
 	 * @param $params
 	 */
-	private function bindParams($params) {
+	private function bindParams($params)
+	{
 		if (empty($this->params) && is_array($params)) {
 			foreach ($params as $column => $value) {
 				$this->bind($column, $value);
@@ -102,8 +107,9 @@ class PDO_DB
 	 * @param string $parameters
 	 * @throws exception
 	 */
-	private function init($query, $parameters = '') {
-		if(!$this->connected) {
+	private function init($query, $parameters = '')
+	{
+		if (!$this->connected) {
 			$this->connect($this->settings_file);
 		}
 		try {
@@ -113,7 +119,7 @@ class PDO_DB
 			if (!empty($this->parameters)) {
 				foreach ($this->parameters as $param => $value) {
 					$type = PDO::PARAM_STR;
-					
+
 					switch ($value[1]) {
 						case is_int($value[1]):
 							$type = PDO::PARAM_INT;
@@ -129,8 +135,7 @@ class PDO_DB
 				}
 			}
 			$this->statement->execute();
-		}
-		catch (PDOException $e) {
+		} catch (PDOException $e) {
 			echo $e->getMessage();
 			echo $query;
 			die();
@@ -144,7 +149,8 @@ class PDO_DB
 	 * @param int $fetch_mode
 	 * @return null
 	 */
-	public function query($query, $params = NULL, $fetch_mode = PDO::FETCH_ASSOC) {
+	public function query($query, $params = NULL, $fetch_mode = PDO::FETCH_ASSOC)
+	{
 		$query = trim(str_replace('\r', '', $query));
 
 		$this->init($query, $params);
@@ -164,21 +170,24 @@ class PDO_DB
 	/**
 	 * @return string
 	 */
-	public function lastInsertId() {
+	public function lastInsertId()
+	{
 		return $this->dbh->lastInsertId();
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function beginTransaction() {
+	public function beginTransaction()
+	{
 		return $this->dbh->beginTransaction();
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function commitTransaction() {
+	public function commitTransaction()
+	{
 		return $this->dbh->commit();
 	}
 
@@ -187,7 +196,8 @@ class PDO_DB
 	 * @param null $params
 	 * @return array|null
 	 */
-	public function column($query, $params = NULL) {
+	public function column($query, $params = NULL)
+	{
 		$this->init($query, $params);
 		$columns = $this->statement->fetchAll(PDO::FETCH_NUM);
 		$column = NULL;
@@ -205,7 +215,8 @@ class PDO_DB
 	 * @param int $fetch_mode
 	 * @return mixed
 	 */
-	public function row($query, $params = NULL, $fetch_mode = PDO::FETCH_ASSOC) {
+	public function row($query, $params = NULL, $fetch_mode = PDO::FETCH_ASSOC)
+	{
 		$this->init($query, $params);
 		$result = $this->statement->fetchColumn();
 		$this->statement->closeCursor();
