@@ -94,7 +94,7 @@ class PDO_DB
 	/**
 	 * @param $params
 	 */
-	private function bindParams($params)
+	public function bindParams($params)
 	{
 		if (empty($this->params) && is_array($params)) {
 			foreach ($params as $column => $value) {
@@ -217,6 +217,19 @@ class PDO_DB
 	 * @return mixed
 	 */
 	public function row($query, $params = NULL, $fetch_mode = PDO::FETCH_ASSOC)
+	{
+		$this->init($query, $params);
+		$result = $this->statement->fetch($fetch_mode);
+		$this->statement->closeCursor();
+		return $result;
+	}
+
+	/**
+	 * @param      $query
+	 * @param null $params
+	 * @return mixed
+	 */
+	public function single($query, $params = null)
 	{
 		$this->init($query, $params);
 		$result = $this->statement->fetchColumn();
