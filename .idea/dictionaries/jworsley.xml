@@ -2,6 +2,9 @@
   <dictionary name="jworsley">
     <words>
       <w>dbname</w>
+      <w>jworsley</w>
+      <w>pgsql</w>
+      <w>worsley</w>
     </words>
   </dictionary>
 </component>

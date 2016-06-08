@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jworsley
+ * User: Justin Worsley
  * Date: 5/30/16
  * Time: 9:31 PM
  * Some code referenced from https://github.com/indieteq/indieteq-php-my-sql-pdo-database-class/blob/master/Db.class.php
@@ -18,6 +18,7 @@
  * [db_attr]
  * PDO::ATTRIBUTE_HERE = VALUE
  */
+
 class PDO_DB
 {
 	// @object Database handle
@@ -54,16 +55,16 @@ class PDO_DB
 		if (!$this->settings = parse_ini_file($settings_file)) {
 			throw new exception("Unable to open file: $settings_file");
 		}
-		$dns = "$this->settings['database']['driver']:host=$this->settings['database']['host']";
-		if (!empty($this->settings['database']['port'])) {
-			$dns .= ";port=$this->settings['database']['port']";
+		$dns = $this->settings['driver'] . ':host=' . $this->settings['host'];
+		if (!empty($this->settings['port'])) {
+			$dns .= ';port='. $this->settings['port'];
 		}
-		$dns .= ";dbname=$this->settings['database']['db_name']";
-		if ($this->settings['db_attr']) {
+		$dns .= ';dbname=' . $this->settings['db_name'];
+		if (isset($this->settings['db_attr'])) {
 			$this->attributes = $this->settings['db_attr'];
 		}
 		try {
-			$this->dbh = new PDO($dns, $this->settings['user'], $this->settings['password'], $this->attributes);
+			$this->dbh = new PDO($dns, $this->settings['username'], $this->settings['password'], $this->attributes);
 			$this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 			$this->connected = TRUE;

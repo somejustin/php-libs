@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="Raspberry Pi">
+    <serverData>
+      <paths name="Raspberry Pi">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/libs" local="$PROJECT_DIR$" web="/libs" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
